@@ -62,15 +62,15 @@ export default {
         //Get plugin badge name
         //console.log(siteSettings.adsense_through_badge); // uncomment for debugging
         //List badges and compare them to the one saved in the plugin settings
-        badges.forEach(function (badge) {
+        for (var badge of badges){
           if (badge.name == siteSettings.adsense_through_badge) {
-            console.log('Do NOT show the Ads for ' + badge.name); // uncomment for debugging
+            //console.log('Do NOT show the Ads for ' + badge.name); // uncomment for debugging
             return "";  //Uncomment to disable ad's
           } else {
-            console.log('Show the Ads for ' + badge.name);  // uncomment for debugging
+            //console.log('Show the Ads for ' + badge.name);  // uncomment for debugging
           }
-        });
-    
+        }
+
       }
 
       const position = slotid.replace('_mobile', '');
