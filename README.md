@@ -8,7 +8,7 @@ Google AdSense plugin for Discourse forum
 
 ### Non-docker installation
 
-* Run `bundle exec rake plugin:install repo=http://github.com/discoursehosting/discourse-adsense` in your discourse directory
+* Run `bundle exec rake plugin:install repo=http://github.com/cdesch/discourse-adsense` in your discourse directory
 * In development mode, run `bundle exec rake assets:clean`
 * In production, recompile your assets: `bundle exec rake assets:precompile`
 * Restart Discourse
@@ -24,7 +24,7 @@ hooks:
         cd: $home/plugins
         cmd:
           - mkdir -p plugins
-          - git clone https://github.com/discoursehosting/discourse-adsense.git
+          - git clone https://github.com/cdesch/discourse-adsense.git
 ```
 * Rebuild the container
 

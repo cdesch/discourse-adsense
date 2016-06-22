@@ -14,3 +14,17 @@ register_css <<CSS
 }
 
 CSS
+
+
+
+after_initialize do
+  CurrentUserSerializer.class_eval do
+    attributes :badges
+
+    # Comment out unless manual record retrieval
+    # def badges
+    #   "badges"
+    # end
+  end
+end
+

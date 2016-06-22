@@ -55,6 +55,10 @@ export default {
           return "";
       }
 
+      //Get badges
+      console.log(currentUser.get('badges'));
+
+
       const position = slotid.replace('_mobile', '');
       if (siteSettings['adsense_show_' + position]) {
         return new Handlebars.SafeString('<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>' +
