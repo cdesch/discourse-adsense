@@ -62,13 +62,18 @@ export default {
         //Get plugin badge name
         //console.log(siteSettings.adsense_through_badge); // uncomment for debugging
         //List badges and compare them to the one saved in the plugin settings
+        var no_ads_badges = siteSettings.adsense_through_badge.split("|");
+        //console.log(no_ads_badges);
         for (var badge of badges){
-          if (badge.name == siteSettings.adsense_through_badge) {
-            //console.log('Do NOT show the Ads for ' + badge.name); // uncomment for debugging
-            return "";  //Uncomment to disable ad's
-          } else {
-            //console.log('Show the Ads for ' + badge.name);  // uncomment for debugging
+          for (var no_ad_badge of no_ads_badges){
+            if (badge.name.toLowerCase() == no_ad_badge.toLowerCase()) {
+              //console.log('Do NOT show the Ads for ' + badge.name.toLowerCase()); // uncomment for debugging
+              return "";  //Uncomment to disable ad's
+            } else {
+              //console.log('Show the Ads for ' + badge.name.toLowerCase() );  // uncomment for debugging
+            }
           }
+
         }
       }
 
