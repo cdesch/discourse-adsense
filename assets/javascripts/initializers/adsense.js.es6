@@ -51,28 +51,27 @@ export default {
     const publisherCode = (siteSettings.adsense_publisher_code || '').trim();
 
     Ember.Handlebars.helper('adsenseBlock', (width, height, slotid) => {
-      if ((currentUser) && ( currentUser.get('trust_level') > siteSettings.adsense_through_trust_level )) {
+      if (currentUser) {
+        if (currentUser.get('trust_level') > siteSettings.adsense_through_trust_level) {
           return "";
-      }
-
-      //TODO: 
-
-      //Get badges
-      console.log(currentUser.get('badges'));
-      var badges = currentUser.get('badges');
-      //Get plugin badge name
-      console.log(siteSettings.adsense_through_badge);
-
-      //List badges and compare them to the one saved in the plugin settings
-
-      badges.forEach(function(badge) {
-        if (badge.name == siteSettings.adsense_through_badge){
-          console.log('Do NOT show the Ads for ' + badge.name);
-
-        }else{
-          console.log('Show the Ads for ' + badge.name);
         }
-      });
+
+        //Get badges
+        //console.log(currentUser.get('badges')); // uncomment for debugging
+        var badges = currentUser.get('badges');
+        //Get plugin badge name
+        //console.log(siteSettings.adsense_through_badge); // uncomment for debugging
+        //List badges and compare them to the one saved in the plugin settings
+        badges.forEach(function (badge) {
+          if (badge.name == siteSettings.adsense_through_badge) {
+            console.log('Do NOT show the Ads for ' + badge.name); // uncomment for debugging
+            return "";  //Uncomment to disable ad's
+          } else {
+            console.log('Show the Ads for ' + badge.name);  // uncomment for debugging
+          }
+        });
+    
+      }
 
       const position = slotid.replace('_mobile', '');
       if (siteSettings['adsense_show_' + position]) {
