@@ -55,9 +55,24 @@ export default {
           return "";
       }
 
+      //TODO: 
+
       //Get badges
       console.log(currentUser.get('badges'));
+      var badges = currentUser.get('badges');
+      //Get plugin badge name
+      console.log(siteSettings.adsense_through_badge);
 
+      //List badges and compare them to the one saved in the plugin settings
+
+      badges.forEach(function(badge) {
+        if (badge.name == siteSettings.adsense_through_badge){
+          console.log('Do NOT show the Ads for ' + badge.name);
+
+        }else{
+          console.log('Show the Ads for ' + badge.name);
+        }
+      });
 
       const position = slotid.replace('_mobile', '');
       if (siteSettings['adsense_show_' + position]) {

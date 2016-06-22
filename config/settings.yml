@@ -33,4 +33,6 @@ adsense_plugin:
     client: true
     default: 2
     enum: 'TrustLevelSetting'
-
+  adsense_through_badge:
+    client: true
+    default: ''
