@@ -1,3 +1,5 @@
+
+import PostModel from 'discourse/models/post';
 import { withPluginApi } from 'discourse/lib/plugin-api';
 import PageTracker from 'discourse/lib/page-tracker';
 
@@ -50,6 +52,20 @@ export default {
     const siteSettings = container.lookup('site-settings:main');
     const publisherCode = (siteSettings.adsense_publisher_code || '').trim();
 
+    PostModel.reopen({
+      postSpecificCount: function() {
+        return this.isNthPost(parseInt(siteSettings.adsense_nth_post_code));
+      }.property('post_number'),
+
+      isNthPost: function(n) {
+        if (n && n > 0) {
+          return (this.get('post_number') % n) === 0;
+        } else {
+          return false;
+        }
+      }
+    });
+
     Ember.Handlebars.helper('adsenseBlock', (width, height, slotid) => {
       if (currentUser) {
         if (currentUser.get('trust_level') > siteSettings.adsense_through_trust_level) {
@@ -73,7 +89,6 @@ export default {
               //console.log('Show the Ads for ' + badge.name.toLowerCase() );  // uncomment for debugging
             }
           }
-
         }
       }
 
