@@ -70,7 +70,6 @@ export default {
             //console.log('Show the Ads for ' + badge.name);  // uncomment for debugging
           }
         }
-
       }
 
       const position = slotid.replace('_mobile', '');
