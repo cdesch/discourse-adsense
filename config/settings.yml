@@ -50,3 +50,27 @@ adsense_plugin:
     client: true
     default: ''
     type: list
+  custom_html_discovery_list_container_top:
+    client: true
+    default: ''
+  custom_html_discovery_list_container_top_mobile:
+    client: true
+    default: ''
+  custom_html_post_bottom:
+    client: true
+    default: ''
+  custom_html_post_bottom_mobile:
+    client: true
+    default: ''
+  custom_html_topic_above_post_stream:
+    client: true
+    default: ''
+  custom_html_topic_above_post_stream_mobile:
+    client: true
+    default: ''
+  custom_html_topic_above_suggested:
+    client: true
+    default: ''
+  custom_html_topic_above_suggested_mobile:
+    client: true
+    default: ''

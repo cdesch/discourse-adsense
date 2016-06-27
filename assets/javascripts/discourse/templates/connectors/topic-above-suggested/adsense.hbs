@@ -1,5 +1,13 @@
 {{#if site.mobileView}}
-  {{adsenseBlock "320" "50" "topic_bottom_mobile"}}
+  {{#if siteSettings.custom_html_topic_above_suggested_mobile}}
+    {{{siteSettings.custom_html_topic_above_suggested_mobile}}}
+  {{else}}
+    {{adsenseBlock "320" "50" "topic_bottom_mobile"}}
+  {{/if}}
 {{else}}
-  {{adsenseBlock "728" "90" "topic_bottom"}}
+  {{#if siteSettings.custom_html_topic_above_suggested}}
+    {{{siteSettings.custom_html_topic_above_suggested}}}
+  {{else}}
+    {{adsenseBlock "728" "90" "topic_bottom"}}
+  {{/if}}
 {{/if}}
