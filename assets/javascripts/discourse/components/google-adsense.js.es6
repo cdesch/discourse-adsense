@@ -39,7 +39,7 @@ function changePage() {
   // Reinitialize script so that the ad can reload
   const ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.id="adsense_loader";
   ga.src = '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
-  const s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); 
+  const s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 }
 
 function oldPluginCode() {
@@ -86,8 +86,38 @@ export default Ember.Component.extend({
     this.set('ad_mobile_code', data[this.placement]["ad_mobile_code"] );
     this._super();
   },
-
   checkTrustLevels: function() {
     return !((currentUser) && (currentUser.get('trust_level') > Discourse.SiteSettings.adsense_through_trust_level));
+  }.property('trust_level'),
+
+  checkTrustLevelsAndBadges: function() {
+
+    if (currentUser) {
+      if (currentUser.get('trust_level') > Discourse.SiteSettings.adsense_through_trust_level){
+        return false;
+      }
+
+      var badges = currentUser.get('badges');
+      //Get plugin badge name
+      console.log(currentUser.get('badges')); // uncomment for debugging
+
+      var no_ads_badges = Discourse.SiteSettings.adsense_through_badge.split("|");
+      for (var badge of badges){
+        for (var no_ad_badge of no_ads_badges){
+          if (badge.name.toLowerCase() == no_ad_badge.toLowerCase()) {
+            //console.log('Do NOT show the Ads for ' + badge.name.toLowerCase()); // uncomment for debugging
+            return false;  //Uncomment to disable ad's
+          } else {
+            //console.log('Show the Ads for ' + badge.name.toLowerCase() );  // uncomment for debugging
+          }
+        }
+      }
+
+      //Terminate by returning true if successfully looping through each Badge
+      return true;
+
+    }else{
+      return false;
+    }
   }.property('trust_level'),
 });
