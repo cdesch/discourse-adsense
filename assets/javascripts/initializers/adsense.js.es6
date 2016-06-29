@@ -1,4 +1,3 @@
-
 import PostModel from 'discourse/models/post';
 import { withPluginApi } from 'discourse/lib/plugin-api';
 import PageTracker from 'discourse/lib/page-tracker';
@@ -47,7 +46,7 @@ function initializeAdsense(api) {
 export default {
   name: "apply-adsense",
   initialize(container) {
-
+    
     const currentUser = container.lookup('current-user:main');
     const siteSettings = container.lookup('site-settings:main');
     const publisherCode = (siteSettings.adsense_publisher_code || '').trim();
@@ -64,6 +63,15 @@ export default {
           return false;
         }
       }
+    });
+    
+    withPluginApi('0.1', api => {
+      api.decorateWidget('post:after', dec => {
+        return dec.connect({
+          templateName: 'connectors/post-bottom/adsense',
+          context: 'model'
+        });
+      });
     });
 
     Ember.Handlebars.helper('adsenseBlock', (width, height, slotid) => {

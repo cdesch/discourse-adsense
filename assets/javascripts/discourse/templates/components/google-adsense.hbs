@@ -1,0 +1,27 @@
+{{#if checkTrustLevels}}
+  {{#if site.mobileView}}
+    <div class="google-adsense-content" style="width: 320px; height: 50px;">
+      <ins class="adsbygoogle"
+        style="display: inline-block; width: 320px; height: 50px;"
+        data-ad-client={{publisher_id}}
+        data-ad-slot={{ad_mobile_code}}>
+      </ins>
+
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  {{else}}
+    <div class="google-adsense-content" style="width: 720px; height: 90px;">
+      <ins class="adsbygoogle"
+        style="display: inline-block; width: 720px; height: 90px;"
+        data-ad-client={{publisher_id}}
+        data-ad-slot={{ad_code}}>
+      </ins>
+
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  {{/if}}
+{{/if}}

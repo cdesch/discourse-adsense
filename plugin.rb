@@ -13,9 +13,25 @@ register_css <<CSS
   margin-bottom: 10px;
 }
 
+.google-adsense .google-adsense-label {
+  width: 728px;
+  margin: 0 auto;
+}
+
+.google-adsense .google-adsense-label h2 {
+  margin: 4px 0 !important;
+  color: #858a8c;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: normal;
+}
+
+.google-adsense .google-adsense-content {
+  margin: 0 auto;
+}
+
 CSS
-
-
 
 after_initialize do
   CurrentUserSerializer.class_eval do
