@@ -32,15 +32,17 @@ register_css <<CSS
 }
 
 CSS
+load File.expand_path('../lib/ad_level.rb', __FILE__)
+load File.expand_path('../app/models/ad_selection_setting.rb', __FILE__)
 
 after_initialize do
+  #require_dependency File.expand_path('app/models/ad_selection_setting.rb', __FILE__)
+  #require_dependency File.expand_path('../app/models/ad_selection_setting.rb', __FILE__)
+
+
   CurrentUserSerializer.class_eval do
     attributes :badges
 
-    # Comment out unless manual record retrieval
-    # def badges
-    #   "badges"
-    # end
   end
 end
 

@@ -5,6 +5,10 @@ adsense_plugin:
   adsense_show_topiclist_top:
     client: true
     default: false
+  ad_for_topic_list_top:
+    client: 1
+    default: 2
+    enum: 'AdSelectionSetting'
   adsense_ad_slot_topiclist_top:
     client: true
     default: ''
