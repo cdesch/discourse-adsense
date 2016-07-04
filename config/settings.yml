@@ -90,6 +90,9 @@ revive_plugin:
   revive_publisher_id:
     client: true
     default: ''
+  revive_publisher_url:
+    client: true
+    default: ''
   revive_through_trust_level:
     client: true
     default: 2

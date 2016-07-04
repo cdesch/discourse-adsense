@@ -24,7 +24,7 @@ function splitHeightInt(value) {
 
 // On each page change, the child is removed and elements part of Adsense's googleads are removed/undefined.
 function changePage() {
-  const ads = document.getElementById("adsense_loader");
+  const ads = document.getElementById("revive_loader");
   if (ads) {
     ads.parentNode.removeChild(ads);
     for (var key in window) {
@@ -37,8 +37,8 @@ function changePage() {
   }
 
   // Reinitialize script so that the ad can reload
-  const ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.id="adsense_loader";
-  ga.src = '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+  const ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.id="revive_loader";
+  ga.src = Discourse.SiteSettings.revive_publisher_code;
   const s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 }
 
@@ -49,6 +49,8 @@ function oldPluginCode() {
 function watchPageChanges(api) {
   api.onPageChange(changePage);
 }
+
+
 withPluginApi('0.1', watchPageChanges, { noApi: oldPluginCode });
 
 var data = {
@@ -59,10 +61,10 @@ var data = {
 };
 
 if (Discourse.SiteSettings.revive_publisher_code) {
-  if (!mobileView && Discourse.SiteSettings.adsense_topic_list_top_code) {
-    data["topic-list-top"]["ad_code"] = Discourse.SiteSettings.adsense_topic_list_top_code;
-    data["topic-list-top"]["ad_width"] = parseInt(splitWidthInt(Discourse.SiteSettings.adsense_topic_list_top_ad_sizes));
-    data["topic-list-top"]["ad_height"] = parseInt(splitHeightInt(Discourse.SiteSettings.adsense_topic_list_top_ad_sizes));
+  if (!mobileView && Discourse.SiteSettings.revive_topic_list_top_code) {
+    data["topic-list-top"]["ad_code"] = Discourse.SiteSettings.revive_topic_list_top_code;
+    data["topic-list-top"]["ad_width"] = parseInt(splitWidthInt(Discourse.SiteSettings.revive_topic_list_top_ad_sizes));
+    data["topic-list-top"]["ad_height"] = parseInt(splitHeightInt(Discourse.SiteSettings.revive_topic_list_top_ad_sizes));
   }
   if (mobileView && Discourse.SiteSettings.adsense_mobile_topic_list_top_code) {
     data["topic-list-top"]["ad_mobile_code"] = Discourse.SiteSettings.adsense_mobile_topic_list_top_code;
@@ -111,6 +113,8 @@ export default Ember.Component.extend({
     this.set('ad_height', data[this.placement]["ad_height"] );
     this.set('ad_code', data[this.placement]["ad_code"] );
     this.set('ad_mobile_code', data[this.placement]["ad_mobile_code"] );
+    this.set('ad_code', data[this.placement]["ad_code"] );
+
     this._super();
   },
 
