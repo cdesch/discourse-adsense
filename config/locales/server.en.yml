@@ -16,6 +16,8 @@ en:
     adsense_nth_post_code: "Show an ad after every N posts, where N is this value."
     adsense_through_trust_level: 'Show ads to users through trust level (0 = to not logged in users only ... 4 = to all users)'
     adsense_through_badge: 'Hides ads to users with this badge. '
+    ad_through_trust_level: 'Show ads to users through trust level (0 = to not logged in users only ... 4 = to all users)'
+    ad_through_badge: 'Hides ads to users with this badge. '
     custom_html_discovery_list_container_top: 'Add custom HTML to display instead of the ad in top discovery list container'
     custom_html_post_bottom: 'Add custom HTML to display instead of the ad in bottom of a post'
     custom_html_topic_above_post_stream: 'Add custom HTML to display instead of the ad above the post stream'

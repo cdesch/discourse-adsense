@@ -1,9 +1,16 @@
-import loadScript from 'discourse/lib/load-script';
+import { withPluginApi } from 'discourse/lib/plugin-api';
+import PageTracker from 'discourse/lib/page-tracker';
 
-var currentUser = Discourse.User.current(),
-  _loaded = false,
-  _promise = null,
-  ads = {};
+var ad_width = '';
+var ad_height = '';
+var ad_mobile_width = 320;
+var ad_mobile_height = 50;
+var currentUser = Discourse.User.current();
+var publisher_id = Discourse.SiteSettings.revive_publisher_code;
+var mobile_width = 320;
+var mobile_height = 50;
+
+const mobileView = Discourse.Site.currentProp('mobileView');
 
 function splitWidthInt(value) {
   var str = value.substring(0, 3);
@@ -15,213 +22,119 @@ function splitHeightInt(value) {
   return str.trim();
 }
 
-// This creates an array for the values of the custom targeting key
-function valueParse(value) {
-  var final = value.replace(/ /g,'');
-  final = final.replace(/['"]+/g, '');
-  final = final.split(',');
-  return final;
+// On each page change, the child is removed and elements part of Adsense's googleads are removed/undefined.
+function changePage() {
+  const ads = document.getElementById("adsense_loader");
+  if (ads) {
+    ads.parentNode.removeChild(ads);
+    for (var key in window) {
+      // Undefining all elements starting with google except for googletag so that the reloading doesn't affect dfp.  Potential future
+      // conflicts may occur if other plugins have element starting with google.
+      if(key.indexOf('google') !== -1 && key.indexOf('googletag') === -1) {
+        window[key] = undefined;
+      }
+    }
+  }
+
+  // Reinitialize script so that the ad can reload
+  const ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.id="adsense_loader";
+  ga.src = '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+  const s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 }
 
-// This creates an array for the key of the custom targeting key
-function keyParse(word) {
-  var key = word;
-  key = key.replace(/['"]+/g, '');
-  key = key.split("\n");
-  return key;
+function oldPluginCode() {
+  PageTracker.current().on('change', changePage);
 }
 
+function watchPageChanges(api) {
+  api.onPageChange(changePage);
+}
+withPluginApi('0.1', watchPageChanges, { noApi: oldPluginCode });
 
-// This sets the key and value for custom targeting
-var Foo = function(key, value, adslot) {
-  this.locationKey = key;
-  this.locationValue = value;
-  this.adslot = adslot;
+var data = {
+  "topic-list-top" : {},
+  "topic-above-post-stream" : {},
+  "topic-above-suggested" : {},
+  "post-bottom" : {}
 };
 
-Foo.prototype.bar = function() {
-  if (this.locationKey) {
-    this.adslot.setTargeting(this.locationKey, this.locationValue);
+if (Discourse.SiteSettings.revive_publisher_code) {
+  if (!mobileView && Discourse.SiteSettings.adsense_topic_list_top_code) {
+    data["topic-list-top"]["ad_code"] = Discourse.SiteSettings.adsense_topic_list_top_code;
+    data["topic-list-top"]["ad_width"] = parseInt(splitWidthInt(Discourse.SiteSettings.adsense_topic_list_top_ad_sizes));
+    data["topic-list-top"]["ad_height"] = parseInt(splitHeightInt(Discourse.SiteSettings.adsense_topic_list_top_ad_sizes));
   }
-};
-
-// This should call adslot.setTargeting(key for that location, value for that location)
-function custom_targeting(key_array, value_array, location) {
-  var f;
-  for (var i = 0; i < key_array.length; i++) {
-    var wordValue = valueParse(value_array[i]);
-    f = new Foo(key_array[i], wordValue, location);
-    f.bar();
+  if (mobileView && Discourse.SiteSettings.adsense_mobile_topic_list_top_code) {
+    data["topic-list-top"]["ad_mobile_code"] = Discourse.SiteSettings.adsense_mobile_topic_list_top_code;
   }
-}
-
-function defineSlot(divId, placement, settings, isMobile) {
-  var ad, width, height;
-
-  if (ads[divId]) {
-    return ads[divId];
+  if (!mobileView && Discourse.SiteSettings.adsense_topic_above_post_stream_code) {
+    data["topic-above-post-stream"]["ad_code"] = Discourse.SiteSettings.adsense_topic_above_post_stream_code;
+    data["topic-above-post-stream"]["ad_width"] = parseInt(splitWidthInt(Discourse.SiteSettings.adsense_topic_above_post_stream_ad_sizes));
+    data["topic-above-post-stream"]["ad_height"] = parseInt(splitHeightInt(Discourse.SiteSettings.adsense_topic_above_post_stream_ad_sizes));
   }
-
-  if (placement === "topic-list-top" && settings.revive_topic_list_top_code && settings.revive_topic_list_top_ad_sizes) {
-    if (isMobile) {
-      width = parseInt(splitWidthInt(settings.revive_mobile_topic_list_top_ad_sizes));
-      height = parseInt(splitHeightInt(settings.revive_mobile_topic_list_top_ad_sizes));
-      ad = window.googletag.defineSlot('/' + settings.revive_publisher_id + '/' + settings.revive_mobile_topic_list_top_code, [width,height], divId).addService(window.googletag.pubads());
-      custom_targeting((keyParse(Discourse.SiteSettings.revive_target_topic_list_top_key_code)), (keyParse(settings.revive_target_topic_list_top_value_code)), ad);
-    } else {
-      width = parseInt(splitWidthInt(settings.revive_topic_list_top_ad_sizes));
-      height = parseInt(splitHeightInt(settings.revive_topic_list_top_ad_sizes));
-      ad = window.googletag.defineSlot('/' + settings.revive_publisher_id + '/' + settings.revive_topic_list_top_code, [width, height], divId).addService(window.googletag.pubads());
-      custom_targeting((keyParse(settings.revive_target_topic_list_top_key_code)), (keyParse(settings.revive_target_topic_list_top_value_code)), ad);
-    }
-  } else if (placement === "topic-above-post-stream" && settings.revive_topic_above_post_stream_code && settings.revive_topic_above_post_stream_ad_sizes) {
-    if (isMobile) {
-      width = parseInt(splitWidthInt(settings.revive_mobile_topic_above_post_stream_ad_sizes));
-      height = parseInt(splitHeightInt(settings.revive_mobile_topic_above_post_stream_ad_sizes));
-      ad = window.googletag.defineSlot('/' + settings.revive_publisher_id + '/' + settings.revive_mobile_topic_above_post_stream_code, [width,height], divId).addService(window.googletag.pubads());
-      custom_targeting((keyParse(settings.revive_target_topic_above_post_stream_key_code)), (keyParse(settings.revive_target_topic_above_post_stream_value_code)), ad);
-    } else {
-      width = parseInt(splitWidthInt(settings.revive_topic_above_post_stream_ad_sizes));
-      height = parseInt(splitHeightInt(settings.revive_topic_above_post_stream_ad_sizes));
-      ad = window.googletag.defineSlot('/' + settings.revive_publisher_id + '/' + settings.revive_topic_above_post_stream_code, [width, height], divId).addService(window.googletag.pubads());
-      custom_targeting((keyParse(settings.revive_target_topic_above_post_stream_key_code)), (keyParse(settings.revive_target_topic_above_post_stream_value_code)), ad);
-    }
-  } else if (placement === "topic-above-suggested" && settings.revive_topic_above_suggested_code && settings.revive_topic_above_suggested_ad_sizes) {
-    if (isMobile) {
-      width = parseInt(splitWidthInt(settings.revive_mobile_topic_above_suggested_ad_sizes));
-      height = parseInt(splitHeightInt(settings.revive_mobile_topic_above_suggested_ad_sizes));
-      ad = window.googletag.defineSlot('/' + settings.revive_publisher_id + '/' + settings.revive_mobile_topic_above_suggested_code, [width,height], divId).addService(window.googletag.pubads());
-      custom_targeting((keyParse(settings.revive_target_topic_above_suggested_key_code)), (keyParse(settings.revive_target_topic_above_suggested_value_code)), ad);
-    } else {
-      width = parseInt(splitWidthInt(settings.revive_topic_above_suggested_ad_sizes));
-      height = parseInt(splitHeightInt(settings.revive_topic_above_suggested_ad_sizes));
-      ad = window.googletag.defineSlot('/' + settings.revive_publisher_id + '/' + settings.revive_topic_above_suggested_code, [width, height], divId).addService(window.googletag.pubads());
-      custom_targeting((keyParse(settings.revive_target_topic_above_suggested_key_code)), (keyParse(settings.revive_target_topic_above_suggested_value_code)), ad);
-    }
-  } else if (placement === "post-bottom" && settings.revive_post_bottom_code && settings.revive_post_bottom_ad_sizes) {
-    if (isMobile) {
-      width = parseInt(splitWidthInt(settings.revive_mobile_post_bottom_ad_sizes));
-      height = parseInt(splitHeightInt(settings.revive_mobile_post_bottom_ad_sizes));
-      ad = window.googletag.defineSlot('/' + settings.revive_publisher_id + '/' + settings.revive_mobile_post_bottom_code, [width,height], divId).addService(window.googletag.pubads());
-      custom_targeting((keyParse(settings.revive_target_post_bottom_key_code)), (keyParse(settings.revive_target_post_bottom_value_code)), ad);
-    } else {
-      width = parseInt(splitWidthInt(settings.revive_post_bottom_ad_sizes));
-      height = parseInt(splitHeightInt(settings.revive_post_bottom_ad_sizes));
-      ad = window.googletag.defineSlot('/' + settings.revive_publisher_id + '/' + settings.revive_post_bottom_code, [width, height], divId).addService(window.googletag.pubads());
-      custom_targeting((keyParse(settings.revive_target_post_bottom_key_code)), (keyParse(settings.revive_target_post_bottom_value_code)), ad);
-    }
+  if (mobileView && Discourse.SiteSettings.adsense_mobile_topic_above_post_stream_code) {
+    data["topic-above-post-stream"]["ad_mobile_code"] = Discourse.SiteSettings.adsense_mobile_topic_above_post_stream_code;
   }
-
-  if (ad) {
-    ads[divId] = {ad: ad, width: width, height: height};
-    return ads[divId];
+  if (!mobileView && Discourse.SiteSettings.adsense_topic_above_suggested_code) {
+    data["topic-above-suggested"]["ad_code"] = Discourse.SiteSettings.adsense_topic_above_suggested_code;
+    data["topic-above-suggested"]["ad_width"] = parseInt(splitWidthInt(Discourse.SiteSettings.adsense_topic_above_suggested_ad_sizes));
+    data["topic-above-suggested"]["ad_height"] = parseInt(splitHeightInt(Discourse.SiteSettings.adsense_topic_above_suggested_ad_sizes));
+  }
+  if (mobileView && Discourse.SiteSettings.adsense_mobile_topic_above_suggested_code) {
+    data["topic-above-suggested"]["ad_mobile_code"] = Discourse.SiteSettings.adsense_mobile_topic_above_suggested_code;
+  }
+  if (!mobileView && Discourse.SiteSettings.adsense_post_bottom_code) {
+    data["post-bottom"]["ad_code"] = Discourse.SiteSettings.adsense_post_bottom_code;
+    data["post-bottom"]["ad_width"] = parseInt(splitWidthInt(Discourse.SiteSettings.adsense_post_bottom_ad_sizes));
+    data["post-bottom"]["ad_height"] = parseInt(splitHeightInt(Discourse.SiteSettings.adsense_post_bottom_ad_sizes));
+  }
+  if (mobileView && Discourse.SiteSettings.adsense_mobile_post_bottom_code) {
+    data["post-bottom"]["ad_mobile_code"] = Discourse.SiteSettings.adsense_mobile_post_bottom_code;
   }
 }
 
-function destroySlot(divId) {
-  if (ads[divId] && window.googletag) {
-    window.googletag.cmd.push(function(){
-      window.googletag.destroySlots([ads[divId].ad]);
-      delete ads[divId];
-    });
-  }
-}
-
-function loadGoogle() {
-  if (_loaded) {
-    return Ember.RSVP.resolve();
-  }
-
-  if (_promise) {
-    return _promise;
-  }
-
-  // The boilerplate code
-  var reviveSrc = (('https:' === document.location.protocol) ? 'https:' : 'http:') + '//www.googletagservices.com/tag/js/gpt.js';
-  _promise = loadScript(reviveSrc, { scriptTag: true }).then(function() {
-    _loaded = true;
-    if (window.googletag === undefined) {
-      console.log('googletag is undefined!');
-    }
-
-    window.googletag.cmd.push(function() {
-      window.googletag.pubads().enableSingleRequest();
-      window.googletag.pubads().disableInitialLoad(); // we always use refresh() to fetch the ads
-      window.googletag.enableServices();
-    });
-  });
-
-  return _promise;
-}
-
-
-// Ember component - the class is the adblock and css
 export default Ember.Component.extend({
-  width: 728,
-  height: 90,
-
-  classNameBindings: ['adUnitClass'],
-  classNames: ['google-revive-ad'],
+  classNames: ['revive-ad'],
   loadedGoogletag: false,
-  refreshOnChange: null,
 
-  divId: function() {
-    if (this.get('postNumber')) {
-      return "div-gpt-ad-" + this.get('placement') + '-' + this.get('postNumber');
-    } else {
-      return "div-gpt-ad-" + this.get('placement');
-    }
-  }.property('placement', 'postNumber'),
+  publisher_id: publisher_id,
+  ad_width: ad_width,
+  ad_height: ad_height,
+  ad_mobile_width: ad_mobile_width,
+  ad_mobile_height: ad_mobile_height,
 
-  adUnitClass: function() {
-    return "revive-ad-" + this.get("placement");
-  }.property('placement'),
+  mobile_width: mobile_width,
+  mobile_height: mobile_height,
+
+  init: function() {
+    this.set('ad_width', data[this.placement]["ad_width"] );
+    this.set('ad_height', data[this.placement]["ad_height"] );
+    this.set('ad_code', data[this.placement]["ad_code"] );
+    this.set('ad_mobile_code', data[this.placement]["ad_mobile_code"] );
+    this._super();
+  },
 
   adWrapperStyle: function() {
-    return `width: ${this.get('width')}px; height: ${this.get('height')}px;`.htmlSafe();
-  }.property('width', 'height'),
+    return `width: ${this.get('ad_width')}px; height: ${this.get('ad_height')}px;`.htmlSafe();
+  }.property('ad_width', 'ad_height'),
+
+  adInsStyle: function() {
+    return `display: inline-block; ${this.get('adWrapperStyle')}`.htmlSafe();
+  }.property('adWrapperStyle'),
+
+  adWrapperStyleMobile: function() {
+    return `width: ${this.get('ad_mobile_width')}px; height: ${this.get('ad_mobile_height')}px;`.htmlSafe();
+  }.property('ad_mobile_width', 'ad_mobile_height'),
 
   adTitleStyleMobile: function() {
-    return `width: ${this.get('width')}px;`.htmlSafe();
-  }.property('width'),
+    return `width: ${this.get('ad_mobile_width')}px;`.htmlSafe();
+  }.property('ad_mobile_width'),
+
+  adInsStyleMobile: function() {
+    return `display: inline-block; ${this.get('adWrapperStyleMobile')}`.htmlSafe();
+  }.property('adWrapperStyleMobile'),
 
   checkTrustLevels: function() {
     return !((currentUser) && (currentUser.get('trust_level') > Discourse.SiteSettings.ad_through_trust_level));
   }.property('trust_level'),
-
-  refreshAd: function() {
-    var slot = ads[this.get('divId')];
-    if (!(slot && slot.ad)) { return; }
-
-    var self = this,
-      ad = slot.ad;
-
-    if (this.get('loadedGoogletag') && this.get('refreshOnChange')) {
-      window.googletag.cmd.push(function() {
-        ad.setTargeting('discourse-category', self.get('category') ? self.get('category') : '0');
-        window.googletag.pubads().refresh([ad]);
-      });
-    }
-  }.observes('refreshOnChange'),
-
-  _initRevive: function() {
-    var self = this;
-    loadGoogle(this.siteSettings).then(function() {
-      self.set('loadedGoogletag', true);
-      window.googletag.cmd.push(function() {
-        let slot = defineSlot(self.get('divId'), self.get('placement'), self.siteSettings, self.site.mobileView);
-        if (slot && slot.ad) {
-          slot.ad.setTargeting('discourse-category', self.get('category') ? self.get('category') : '0');
-          self.set('width', slot.width);
-          self.set('height', slot.height);
-          window.googletag.display(self.get('divId'));
-          window.googletag.pubads().refresh([slot.ad]);
-        }
-      });
-    });
-  }.on('didInsertElement'),
-
-  cleanup: function() {
-    destroySlot(this.get('divId'));
-  }.on('willDestroyElement')
 });
