@@ -24,12 +24,3 @@ en:
     custom_html_post_bottom_mobile: 'Add custom HTML to display instead of the ad in mobile view in bottom of a post'
     custom_html_topic_above_post_stream_mobile: 'Add custom HTML to display instead of the ad in the mobile view above the post stream'
     custom_html_topic_above_suggested_mobile: 'Add custom HTML to display instead of the ad in mobile view above suggested'
-
-  ad_levels:
-      ad_sense:
-        title: "Ad Sense"
-      revive:
-        title: "Revive"
-      custom_url:
-        title: "Custom URL"
-      change_failed_explanation: "You attempted to demote %{user_name} to '%{new_trust_level}'. However their trust level is already '%{current_trust_level}'. %{user_name} will remain at '%{current_trust_level}' - if you wish to demote user lock trust level first"

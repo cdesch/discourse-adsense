@@ -1,3 +1,12 @@
+ad_plugin:
+  ad_through_trust_level:
+    client: true
+    default: 2
+    enum: 'TrustLevelSetting'
+  ad_through_badge:
+    client: true
+    default: ''
+    type: list
 adsense_plugin:
   adsense_publisher_code:
     client: true
@@ -5,21 +14,6 @@ adsense_plugin:
   adsense_show_topiclist_top:
     client: true
     default: false
-  ad_for_topic_list_top:
-     client: true
-     default: '728*90 - leaderboard'
-     type: enum
-     choices:
-       - 728*90 - leaderboard
-       - 336*280 - large rectangle
-       - 300*250 - medium rectangle
-       - 970*90 - large leaderboard
-       - 468*60 - banner
-       - 234*60 - half banner
-       - 125*125 - button
-       - 180*150 - small rectangle
-       - 200*200 - small square
-       - 250*250 - square
   adsense_ad_slot_topiclist_top:
     client: true
     default: ''
@@ -89,3 +83,226 @@ adsense_plugin:
   custom_html_topic_above_suggested_mobile:
     client: true
     default: ''
+
+
+revive_plugin:
+  revive_publisher_id:
+    client: true
+    default: ''
+  revive_through_trust_level:
+    client: true
+    default: 2
+    enum: 'TrustLevelSetting'
+  revive_topic_list_top_code:
+    client: true
+    default: ''
+    max: 50
+  revive_topic_list_top_ad_sizes:
+    client: true
+    default: '728*90 - leaderboard'
+    type: enum
+    choices:
+      - 728*90 - leaderboard
+      - 336*280 - large rectangle
+      - 300*250 - medium rectangle
+      - 970*90 - large leaderboard
+      - 970*250 - billboard
+      - 468*60 - banner
+      - 320*50 - mobile leaderboard
+      - 160*600 - wide skyscraper
+      - 234*60 - half banner
+      - 125*125 - button
+      - 180*150 - small rectangle
+      - 200*200 - small square
+      - 250*250 - square
+      - 300*600 - half page ad
+      - 320*100 - large mobile banner
+  revive_mobile_topic_list_top_code:
+    client: true
+    default: ''
+    max: 50
+  revive_mobile_topic_list_top_ad_sizes:
+    client: true
+    default: '320*50 - mobile leaderboard'
+    type: enum
+    choices:
+      - 320*50 - mobile leaderboard
+      - 300*250 - medium rectangle
+      - 336*280 - large rectangle
+      - 160*600 - wide skyscraper
+      - 234*60 - half banner
+      - 125*125 - button
+      - 180*150 - small rectangle
+      - 200*200 - small square
+      - 250*250 - square
+      - 300*600 - half page ad
+      - 320*100 - large mobile banner
+  revive_target_topic_list_top_key_code:
+    default: ''
+    type: value_list
+    client: true
+  revive_target_topic_list_top_value_code:
+    default: ''
+    type: value_list
+    client: true
+  revive_topic_above_post_stream_code:
+    client: true
+    default: ''
+    max: 50
+  revive_topic_above_post_stream_ad_sizes:
+    client: true
+    default: '728*90 - leaderboard'
+    type: enum
+    choices:
+      - 728*90 - leaderboard
+      - 336*280 - large rectangle
+      - 300*250 - medium rectangle
+      - 970*90 - large leaderboard
+      - 970*250 - billboard
+      - 468*60 - banner
+      - 320*50 - mobile leaderboard
+      - 160*600 - wide skyscraper
+      - 234*60 - half banner
+      - 125*125 - button
+      - 180*150 - small rectangle
+      - 200*200 - small square
+      - 250*250 - square
+      - 300*600 - half page ad
+      - 320*100 - large mobile banner
+  revive_mobile_topic_above_post_stream_code:
+    client: true
+    default: ''
+    max: 50
+  revive_mobile_topic_above_post_stream_ad_sizes:
+    client: true
+    default: '320*50 - mobile leaderboard'
+    type: enum
+    choices:
+      - 320*50 - mobile leaderboard
+      - 300*250 - medium rectangle
+      - 336*280 - large rectangle
+      - 160*600 - wide skyscraper
+      - 234*60 - half banner
+      - 125*125 - button
+      - 180*150 - small rectangle
+      - 200*200 - small square
+      - 250*250 - square
+      - 300*600 - half page ad
+      - 320*100 - large mobile banner
+  revive_target_topic_above_post_stream_key_code:
+    default: ''
+    type: value_list
+    client: true
+  revive_target_topic_above_post_stream_value_code:
+    default: ''
+    type: value_list
+    client: true
+  revive_topic_above_suggested_code:
+    client: true
+    default: ''
+    max: 50
+  revive_topic_above_suggested_ad_sizes:
+    client: true
+    default: '728*90 - leaderboard'
+    type: enum
+    choices:
+      - 728*90 - leaderboard
+      - 336*280 - large rectangle
+      - 300*250 - medium rectangle
+      - 970*90 - large leaderboard
+      - 970*250 - billboard
+      - 468*60 - banner
+      - 320*50 - mobile leaderboard
+      - 160*600 - wide skyscraper
+      - 234*60 - half banner
+      - 125*125 - button
+      - 180*150 - small rectangle
+      - 200*200 - small square
+      - 250*250 - square
+      - 300*600 - half page ad
+      - 320*100 - large mobile banner
+  revive_mobile_topic_above_suggested_code:
+    client: true
+    default: ''
+    max: 50
+  revive_mobile_topic_above_suggested_ad_sizes:
+    client: true
+    default: '320*50 - mobile leaderboard'
+    type: enum
+    choices:
+      - 320*50 - mobile leaderboard
+      - 300*250 - medium rectangle
+      - 336*280 - large rectangle
+      - 160*600 - wide skyscraper
+      - 234*60 - half banner
+      - 125*125 - button
+      - 180*150 - small rectangle
+      - 200*200 - small square
+      - 250*250 - square
+      - 300*600 - half page ad
+      - 320*100 - large mobile banner
+  revive_target_topic_above_suggested_key_code:
+    default: ''
+    type: value_list
+    client: true
+  revive_target_topic_above_suggested_value_code:
+    default: ''
+    type: value_list
+    client: true
+    max: 50
+  revive_nth_post_code:
+    client: true
+    default: ''
+    min: 1
+  revive_post_bottom_code:
+    client: true
+    default: ''
+    max: 50
+  revive_post_bottom_ad_sizes:
+    client: true
+    default: '728*90 - leaderboard'
+    type: enum
+    choices:
+      - 728*90 - leaderboard
+      - 336*280 - large rectangle
+      - 300*250 - medium rectangle
+      - 970*90 - large leaderboard
+      - 970*250 - billboard
+      - 468*60 - banner
+      - 320*50 - mobile leaderboard
+      - 160*600 - wide skyscraper
+      - 234*60 - half banner
+      - 125*125 - button
+      - 180*150 - small rectangle
+      - 200*200 - small square
+      - 250*250 - square
+      - 300*600 - half page ad
+      - 320*100 - large mobile banner
+  revive_mobile_post_bottom_code:
+    client: true
+    default: ''
+    max: 50
+  revive_mobile_post_bottom_ad_sizes:
+    client: true
+    default: '320*50 - mobile leaderboard'
+    type: enum
+    choices:
+      - 320*50 - mobile leaderboard
+      - 300*250 - medium rectangle
+      - 336*280 - large rectangle
+      - 160*600 - wide skyscraper
+      - 234*60 - half banner
+      - 125*125 - button
+      - 180*150 - small rectangle
+      - 200*200 - small square
+      - 250*250 - square
+      - 300*600 - half page ad
+      - 320*100 - large mobile banner
+  revive_target_post_bottom_key_code:
+    default: ''
+    type: value_list
+    client: true
+  revive_target_post_bottom_value_code:
+    default: ''
+    type: value_list
+    client: true

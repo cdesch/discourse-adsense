@@ -3,4 +3,6 @@ en:
     admin:
       site_settings:
         categories:
+          ad_plugin: 'Ad Plugin Settings'
           adsense_plugin: 'AdSense'
+          revive_plugin: 'Revive'
