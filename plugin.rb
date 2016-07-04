@@ -32,6 +32,10 @@ register_css <<CSS
 }
 
 CSS
+
+
+#enabled_site_setting :discourse_ads_enabled
+
 load File.expand_path('../lib/ad_level.rb', __FILE__)
 load File.expand_path('../app/models/ad_selection_setting.rb', __FILE__)
 
@@ -46,3 +50,6 @@ after_initialize do
   end
 end
 
+#Discourse::Application.routes.append do
+#  mount ::DiscourseAds::Engine, at: '/admin/plugins/discourse_ads'
+#end

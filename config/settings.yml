@@ -6,9 +6,20 @@ adsense_plugin:
     client: true
     default: false
   ad_for_topic_list_top:
-    client: 1
-    default: 2
-    enum: 'AdSelectionSetting'
+     client: true
+     default: '728*90 - leaderboard'
+     type: enum
+     choices:
+       - 728*90 - leaderboard
+       - 336*280 - large rectangle
+       - 300*250 - medium rectangle
+       - 970*90 - large leaderboard
+       - 468*60 - banner
+       - 234*60 - half banner
+       - 125*125 - button
+       - 180*150 - small rectangle
+       - 200*200 - small square
+       - 250*250 - square
   adsense_ad_slot_topiclist_top:
     client: true
     default: ''
